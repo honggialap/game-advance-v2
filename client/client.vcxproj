@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{3e448920-bad8-45e8-9667-ef4357ed65a1}</ProjectGuid>
+    <RootNamespace>client</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\client\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\client\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine\external\SFML-2.6.0\include;$(SolutionDir)engine\external\box2d-2.4.1\include;$(SolutionDir)engine\external\nlohmann\include;$(SolutionDir)engine\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)engine\external\box2d-2.4.1\lib;$(SolutionDir)engine\external\SFML-2.6.0\lib;$(SolutionDir)x64\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-audio-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;box2d.lib;engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine\external\SFML-2.6.0\include;$(SolutionDir)engine\external\box2d-2.4.1\include;$(SolutionDir)engine\external\nlohmann\include;$(SolutionDir)engine\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)engine\external\SFML-2.6.0\lib;$(SolutionDir)engine\external\box2d-2.4.1\lib;$(SolutionDir)x64\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s.lib;sfml-window-s.lib;sfml-audio-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;engine.lib;box2d.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\client\framework\tick\client_tick_counter.cpp" />
+    <ClCompile Include="source\client\framework\game_object\remote_object.cpp" />
+    <ClCompile Include="source\client\logic\actor\game_master.cpp" />
+    <ClCompile Include="source\client\logic\actor\headquarter.cpp" />
+    <ClCompile Include="source\client\logic\actor\pick_up\bomb.cpp" />
+    <ClCompile Include="source\client\logic\actor\pick_up\extra_life.cpp" />
+    <ClCompile Include="source\client\logic\actor\pick_up\fence.cpp" />
+    <ClCompile Include="source\client\logic\actor\pick_up\freeze.cpp" />
+    <ClCompile Include="source\client\logic\actor\pick_up\power_up.cpp" />
+    <ClCompile Include="source\client\logic\actor\pick_up\shield.cpp" />
+    <ClCompile Include="source\client\logic\actor\sample_actor.cpp" />
+    <ClCompile Include="source\client\logic\actor\tank\bullet.cpp" />
+    <ClCompile Include="source\client\logic\actor\tank\enemy_bullet.cpp" />
+    <ClCompile Include="source\client\logic\actor\tank\enemy_tank.cpp" />
+    <ClCompile Include="source\client\logic\actor\tank\player_bullet.cpp" />
+    <ClCompile Include="source\client\logic\actor\tank\player_tank.cpp" />
+    <ClCompile Include="source\client\logic\actor\tank\tank.cpp" />
+    <ClCompile Include="source\client\logic\actor\terrain\bound.cpp" />
+    <ClCompile Include="source\client\logic\actor\terrain\brick.cpp" />
+    <ClCompile Include="source\client\logic\actor\terrain\ice.cpp" />
+    <ClCompile Include="source\client\logic\actor\terrain\steel.cpp" />
+    <ClCompile Include="source\client\logic\actor\terrain\tree.cpp" />
+    <ClCompile Include="source\client\logic\actor\terrain\water.cpp" />
+    <ClCompile Include="source\client\framework\network\client.cpp" />
+    <ClCompile Include="source\client\framework\network\client_scene.cpp" />
+    <ClCompile Include="source\client\game_client.cpp" />
+    <ClCompile Include="source\client\lobby_scene.cpp" />
+    <ClCompile Include="source\client\play_scene.cpp" />
+    <ClCompile Include="source\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\actor\game_master.h" />
+    <ClInclude Include="include\actor\headquarter.h" />
+    <ClInclude Include="include\actor\pick_up\bomb.h" />
+    <ClInclude Include="include\actor\pick_up\extra_life.h" />
+    <ClInclude Include="include\actor\pick_up\fence.h" />
+    <ClInclude Include="include\actor\pick_up\freeze.h" />
+    <ClInclude Include="include\actor\pick_up\power_up.h" />
+    <ClInclude Include="include\actor\pick_up\shield.h" />
+    <ClInclude Include="include\actor\tank\enemy_bullet.h" />
+    <ClInclude Include="include\actor\tank\enemy_tank.h" />
+    <ClInclude Include="include\actor\tank\player_bullet.h" />
+    <ClInclude Include="include\actor\tank\player_tank.h" />
+    <ClInclude Include="include\actor\terrain\block.h" />
+    <ClInclude Include="include\actor\terrain\brick.h" />
+    <ClInclude Include="include\actor\terrain\ice.h" />
+    <ClInclude Include="include\actor\terrain\tree.h" />
+    <ClInclude Include="include\actor\terrain\water.h" />
+    <ClInclude Include="include\client\framework\framework.h" />
+    <ClInclude Include="include\client\framework\tick\client_tick_counter.h" />
+    <ClInclude Include="include\client\logic\actor\game_master.h" />
+    <ClInclude Include="include\client\logic\actor\headquarter.h" />
+    <ClInclude Include="include\client\logic\actor\tank\bullet.h" />
+    <ClInclude Include="include\client\logic\actor\tank\tank.h" />
+    <ClInclude Include="include\client\logic\logic.h" />
+    <ClInclude Include="include\client\logic\actor\pick_up\bomb.h" />
+    <ClInclude Include="include\client\logic\actor\pick_up\extra_life.h" />
+    <ClInclude Include="include\client\logic\actor\pick_up\fence.h" />
+    <ClInclude Include="include\client\logic\actor\pick_up\freeze.h" />
+    <ClInclude Include="include\client\logic\actor\pick_up\power_up.h" />
+    <ClInclude Include="include\client\logic\actor\pick_up\shield.h" />
+    <ClInclude Include="include\client\logic\actor\sample_actor.h" />
+    <ClInclude Include="include\client\logic\actor\tank\enemy_bullet.h" />
+    <ClInclude Include="include\client\logic\actor\tank\enemy_tank.h" />
+    <ClInclude Include="include\client\logic\actor\tank\player_bullet.h" />
+    <ClInclude Include="include\client\logic\actor\tank\player_tank.h" />
+    <ClInclude Include="include\client\logic\actor\terrain\bound.h" />
+    <ClInclude Include="include\client\logic\actor\terrain\brick.h" />
+    <ClInclude Include="include\client\logic\actor\terrain\ice.h" />
+    <ClInclude Include="include\client\logic\actor\terrain\steel.h" />
+    <ClInclude Include="include\client\logic\actor\terrain\tree.h" />
+    <ClInclude Include="include\client\logic\actor\terrain\water.h" />
+    <ClInclude Include="include\client\client.h" />
+    <ClInclude Include="include\client\client_object.h" />
+    <ClInclude Include="include\client\client_scene.h" />
+    <ClInclude Include="include\client\game_client.h" />
+    <ClInclude Include="include\client\framework\game_object\remote_object.h" />
+    <ClInclude Include="include\client\framework\network\client.h" />
+    <ClInclude Include="include\client\framework\network\client_object.h" />
+    <ClInclude Include="include\client\framework\network\client_scene.h" />
+    <ClInclude Include="include\client\lobby_scene.h" />
+    <ClInclude Include="include\client\play_scene.h" />
+    <ClInclude Include="include\game_client.h" />
+    <ClInclude Include="include\lobby_scene.h" />
+    <ClInclude Include="include\play_scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\game_data.json" />
+    <None Include="data\scene\play.json" />
+    <None Include="data\scene\lobby.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\engine\engine.vcxproj">
+      <Project>{3c9e2e4d-53de-4bd0-bbf6-9aa66925242d}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

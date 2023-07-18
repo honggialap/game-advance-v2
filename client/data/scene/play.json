@@ -1,0 +1,47 @@
+{
+  "play_scene_id": 2,
+  "lobby_scene_id": 1,
+
+  "textures": [
+    {
+      "id": 10,
+      "file_path": "data/texture/main_ui_frame.png"
+    },
+    {
+      "id": 21,
+      "file_path": "data/texture/player_1_tank.png"
+    },
+    {
+      "id": 22,
+      "file_path": "data/texture/player_2_tank.png"
+    },
+    {
+      "id": 23,
+      "file_path": "data/texture/enemy_tank_base.png"
+    },
+    {
+      "id": 24,
+      "file_path": "data/texture/enemy_tank_red.png"
+    },
+    {
+      "id": 25,
+      "file_path": "data/texture/bullet.png"
+    },
+    {
+      "id": 30,
+      "file_path": "data/texture/headquarter.png"
+    },
+    {
+      "id": 31,
+      "file_path": "data/texture/pick_up.png"
+    },
+    {
+      "id": 32,
+      "file_path": "data/texture/terrain.png"
+    },
+    {
+      "id": 40,
+      "file_path": "data/texture/shield_effect.png"
+    }
+  ]
+}

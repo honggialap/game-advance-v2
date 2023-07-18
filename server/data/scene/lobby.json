@@ -1,0 +1,38 @@
+{
+  "textures": [
+    {
+      "id": 1,
+      "file_path": "data/texture/lobby.png"
+    }
+  ],
+
+  "sprites": [
+    {
+      "id": 1,
+      "texture_id": 1,
+      "left": 0,
+      "top": 0,
+      "width": 768,
+      "height": 720,
+      "offset_x": -384,
+      "offset_y": 360
+    }
+  ],
+
+  "text_fonts": [
+    {
+      "id": 1,
+      "file_path": "data/font/font.ttf"
+    }
+  ],
+
+  "texts": [
+    {
+      "id": 1,
+      "text_font_id": 1
+    }
+  ],
+
+  "play_scene_id": 2,
+  "count_down": 1000.0
+}

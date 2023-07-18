@@ -1,0 +1,176 @@
+{
+  "sprites": [
+    {
+      "id": 11,
+      "texture_id": 21,
+      "left": 0,
+      "top": 0,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 12,
+      "texture_id": 21,
+      "left": 96,
+      "top": 0,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 13,
+      "texture_id": 21,
+      "left": 192,
+      "top": 0,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 14,
+      "texture_id": 21,
+      "left": 288,
+      "top": 0,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+
+    {
+      "id": 21,
+      "texture_id": 21,
+      "left": 0,
+      "top": 48,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 22,
+      "texture_id": 21,
+      "left": 96,
+      "top": 48,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 23,
+      "texture_id": 21,
+      "left": 192,
+      "top": 48,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 24,
+      "texture_id": 21,
+      "left": 288,
+      "top": 48,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+
+    {
+      "id": 31,
+      "texture_id": 21,
+      "left": 0,
+      "top": 96,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 32,
+      "texture_id": 21,
+      "left": 96,
+      "top": 96,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 33,
+      "texture_id": 21,
+      "left": 192,
+      "top": 96,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 34,
+      "texture_id": 21,
+      "left": 288,
+      "top": 96,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 41,
+      "texture_id": 21,
+      "left": 0,
+      "top": 144,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 42,
+      "texture_id": 21,
+      "left": 96,
+      "top": 144,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 43,
+      "texture_id": 21,
+      "left": 192,
+      "top": 144,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 44,
+      "texture_id": 21,
+      "left": 288,
+      "top": 144,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 50,
+      "texture_id": 40,
+      "left": 0,
+      "top": 0,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    }
+  ]
+}

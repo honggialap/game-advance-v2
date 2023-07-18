@@ -1,0 +1,44 @@
+{
+  "sprites": [
+    {
+      "id": 1,
+      "texture_id": 25,
+      "left": 0,
+      "top": 0,
+      "width": 12,
+      "height": 12,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 2,
+      "texture_id": 25,
+      "left": 12,
+      "top": 0,
+      "width": 12,
+      "height": 12,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 3,
+      "texture_id": 25,
+      "left": 24,
+      "top": 0,
+      "width": 12,
+      "height": 12,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 4,
+      "texture_id": 25,
+      "left": 36,
+      "top": 0,
+      "width": 12,
+      "height": 12,
+      "offset_x": 0,
+      "offset_y": 0
+    }
+  ]
+}

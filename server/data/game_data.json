@@ -1,0 +1,37 @@
+{
+  "window": {
+    "title": "Server",
+    "width": 768,
+    "height": 720,
+    "frame_rate": 32.0,
+    "frame_skip_factor": 2.0
+  },
+
+  "network": {
+    "address": "::1",
+    "port": 27015,
+    "max_connection": 2
+  },
+
+  "scenes": {
+    "start_scene_id": 1,
+    "scene_list": [
+      {
+        "id": 1,
+        "type": 1,
+        "data_path": "data/scene/lobby.json"
+      },
+      {
+        "id": 2,
+        "type": 2,
+        "data_path": "data/scene/level_1.json"
+      },
+      {
+        "id": 3,
+        "type": 2,
+        "data_path": "data/scene/level_2.json"
+      }
+    ]
+  }
+
+}

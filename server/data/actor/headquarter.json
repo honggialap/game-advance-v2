@@ -1,0 +1,24 @@
+{
+  "sprites": [
+    {
+      "id": 1,
+      "texture_id": 30,
+      "left": 0,
+      "top": 0,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    },
+    {
+      "id": 2,
+      "texture_id": 30,
+      "left": 48,
+      "top": 0,
+      "width": 48,
+      "height": 48,
+      "offset_x": 0,
+      "offset_y": 0
+    }
+  ]
+}
