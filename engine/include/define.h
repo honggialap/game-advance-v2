@@ -48,7 +48,7 @@ typedef uint16_t EventType;
 enum EEventType : EventType {
 	INVALID_EVENT
 	
-	,
+	,BULLET_IMPACT_EVENT
 };
 
 enum EPacketType : PacketType {
@@ -64,10 +64,14 @@ enum EPacketType : PacketType {
 	, BODY_LOAD
 	, END_LOAD			
 	, DONE_LOAD
+
+	, START_SYNC
 	, SYNC
+	, DONE_SYNC
+	
 	, START_GAME
-	, END_GAME
 	, STATE
+	, END_GAME
 
 	, PLAYER_MOVE
 	, PLAYER_SHOOT

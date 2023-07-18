@@ -266,6 +266,15 @@
     <ClInclude Include="include\client\logic\actor\tank\tank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\client\logic\command\move_command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\client\logic\command\shoot_command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\client\logic\event\bullet_impact_event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\scene\play.json" />

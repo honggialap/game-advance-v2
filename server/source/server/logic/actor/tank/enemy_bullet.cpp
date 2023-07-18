@@ -1,5 +1,6 @@
 #include "server/logic/actor/tank/enemy_bullet.h"
 #include "server/play_scene.h"
+#include "server/logic/record/tank/enemy_bullet_record.h"
 
 CEnemyBullet::CEnemyBullet(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -44,7 +45,6 @@ void CEnemyBullet::Unload() {
 }
 
 void CEnemyBullet::PackLoadPacket(pPacket packet) {
-	PackUpdatableLoadPacket(packet);
 	PackRenderableLoadPacket(packet);
 	PackBodyLoadPacket(packet);
 
@@ -79,10 +79,62 @@ void CEnemyBullet::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CEnemyBullet::Serialize() {
-	return pRecord();
+	auto record = new CEnemyBulletRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_shot = IsShot();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	float velocity_x;
+	float velocity_y;
+	GetBodyVelocity(velocity_x, velocity_y);
+	record->velocity_x = velocity_x;
+	record->velocity_y = velocity_y;
+
+	record->normal_x = normal_x;
+	record->normal_y = normal_y;
+
+	return record;
 }
 
 void CEnemyBullet::Deserialize(pRecord record) {
+	auto enemy_bullet_record = static_cast<pEnemyBulletRecord>(record);
+
+	if (IsActive() != enemy_bullet_record->is_active) {
+		SetActive(enemy_bullet_record->is_active);
+	}
+
+	if (IsVisible() != enemy_bullet_record->is_visible) {
+		SetVisible(enemy_bullet_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != enemy_bullet_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(enemy_bullet_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != enemy_bullet_record->is_awake) {
+		GetPhysicsBody()->SetAwake(enemy_bullet_record->is_awake);
+	}
+
+	if (IsShot() != enemy_bullet_record->is_shot) {
+		SetShot(enemy_bullet_record->is_shot);
+	}
+
+	SetBodyPosition(enemy_bullet_record->position_x, enemy_bullet_record->position_y);
+	SetBodyVelocity(enemy_bullet_record->velocity_x, enemy_bullet_record->velocity_y);
+
+	normal_x = enemy_bullet_record->normal_x;
+	normal_y = enemy_bullet_record->normal_y;
 }
 
 void CEnemyBullet::OnShoot(float x, float y, int8_t nx, int8_t ny) {

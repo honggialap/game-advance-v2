@@ -15,7 +15,8 @@ protected:
 public:
 	void SetTank(pTank tank);
 
-	bool IsShot();
+	void SetShot(bool value) { is_shot = value; }
+	bool IsShot() { return is_shot; }
 
 	void Shoot(float x, float y, bool left, bool up);
 	void Impact();

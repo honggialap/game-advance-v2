@@ -5,8 +5,13 @@
 #include "engine/framework/framework.h"
 #include "client/framework/framework.h"
 
+enum EHeadquarterState : uint8_t {
+	HQ_IDLE
+	, HQ_DESTROYED
+};
+
 class CPlayScene;
-class CHeadquarter
+class CHeadquarter final
 	: public CClientObject
 	, public CGameObject
 	, public CNetworkObject
@@ -16,12 +21,16 @@ class CHeadquarter
 {
 protected:
 	CPlayScene& play_scene;
+	EHeadquarterState state = EHeadquarterState::HQ_IDLE;
 
 public:
 	CHeadquarter(CPlayScene& play_scene, std::string name);
 	~CHeadquarter();
 
 	CPlayScene& GetPlayScene() { return play_scene; }
+
+	void SetState(EHeadquarterState new_state) { state = new_state; }
+	EHeadquarterState GetState() { return state; }
 
 	virtual void LoadFromFile(std::string file_path) override final;
 	virtual void Unload() override final;

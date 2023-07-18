@@ -1,5 +1,6 @@
 #include "server/logic/actor/pick_up/extra_life.h"
 #include "server/play_scene.h"
+#include "server/logic/record/pick_up/extra_life_record.h"
 
 CExtraLife::CExtraLife(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -76,10 +77,50 @@ void CExtraLife::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CExtraLife::Serialize() {
-	return pRecord();
+	auto record = new CExtraLifeRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_spawned = IsSpawned();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	return record;
 }
 
 void CExtraLife::Deserialize(pRecord record) {
+	auto extra_life_record = static_cast<pExtraLifeRecord>(record);
+
+	if (IsActive() != extra_life_record->is_active) {
+		SetActive(extra_life_record->is_active);
+	}
+
+	if (IsVisible() != extra_life_record->is_visible) {
+		SetVisible(extra_life_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != extra_life_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(extra_life_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != extra_life_record->is_awake) {
+		GetPhysicsBody()->SetAwake(extra_life_record->is_awake);
+	}
+
+	if (IsSpawned() != extra_life_record->is_spawned) {
+		SetSpawned(extra_life_record->is_spawned);
+	}
+
+	SetBodyPosition(extra_life_record->position_x, extra_life_record->position_y);
 }
 
 void CExtraLife::OnSpawn(float x, float y) {

@@ -1,5 +1,6 @@
 #include "server/logic/actor/pick_up/power_up.h"
 #include "server/play_scene.h"
+#include "server/logic/record/pick_up/power_up_record.h"
 
 CPowerUp::CPowerUp(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -75,10 +76,50 @@ void CPowerUp::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CPowerUp::Serialize() {
-	return pRecord();
+	auto record = new CPowerUpRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_spawned = IsSpawned();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	return record;
 }
 
 void CPowerUp::Deserialize(pRecord record) {
+	auto power_up_record = static_cast<pPowerUpRecord>(record);
+
+	if (IsActive() != power_up_record->is_active) {
+		SetActive(power_up_record->is_active);
+	}
+
+	if (IsVisible() != power_up_record->is_visible) {
+		SetVisible(power_up_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != power_up_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(power_up_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != power_up_record->is_awake) {
+		GetPhysicsBody()->SetAwake(power_up_record->is_awake);
+	}
+
+	if (IsSpawned() != power_up_record->is_spawned) {
+		SetSpawned(power_up_record->is_spawned);
+	}
+
+	SetBodyPosition(power_up_record->position_x, power_up_record->position_y);
 }
 
 void CPowerUp::OnSpawn(float x, float y) {

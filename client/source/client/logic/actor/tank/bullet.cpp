@@ -6,10 +6,6 @@ void CBullet::SetTank(pTank tank) {
 	tank->AddBullet(this);
 }
 
-bool CBullet::IsShot() {
-	return is_shot;
-}
-
 void CBullet::Shoot(float x, float y, bool left, bool up) {
 	is_shot = true;
 	OnShoot(x, y, left, up);

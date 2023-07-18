@@ -6,7 +6,7 @@
 #include "client/framework/framework.h"
 
 class CPlayScene;
-class CGameMaster
+class CGameMaster final
 	: public CClientObject
 	, public CGameObject
 	, public CNetworkObject

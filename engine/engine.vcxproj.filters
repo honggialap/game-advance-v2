@@ -269,9 +269,6 @@
     <ClCompile Include="source\engine\framework\command\commandable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\engine\framework\event\event.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\engine\framework\event\event_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

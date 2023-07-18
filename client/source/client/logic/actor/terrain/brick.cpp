@@ -36,6 +36,23 @@ void CBrick::LoadFromPacket(pPacket packet) {
 }
 
 void CBrick::HandleStatePacket(pPacket packet) {
+	bool is_visible;
+	*packet >> is_visible;
+	if (IsVisible() != is_visible) {
+		SetVisible(is_visible);
+	}
+
+	bool is_enable;
+	*packet >> is_enable;
+	if (GetPhysicsBody()->IsEnabled() != is_enable) {
+		GetPhysicsBody()->SetEnabled(is_enable);
+	}
+
+	bool is_awake;
+	*packet >> is_awake;
+	if (GetPhysicsBody()->IsAwake() != is_awake) {
+		GetPhysicsBody()->SetAwake(is_awake);
+	}
 }
 
 void CBrick::Render(sf::RenderWindow& window) {

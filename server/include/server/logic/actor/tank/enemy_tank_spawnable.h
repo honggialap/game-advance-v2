@@ -14,6 +14,8 @@ private:
 
 public:
 	void SetEnemyTankSpawner(pEnemyTankSpawner spawner);
+
+	void SetSpawned(bool value) { is_spawned = value; }
 	bool IsSpawned() { return is_spawned; }
 
 	void Spawn(float x, float y);

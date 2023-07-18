@@ -1,6 +1,7 @@
 #include "server/logic/actor/tank/enemy_tank.h"
 #include "server/logic/actor/tank/enemy_tank_spawner.h"
 #include "server/play_scene.h"
+#include "server/logic/record/tank/enemy_tank_record.h"
 
 CEnemyTank::CEnemyTank(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -47,7 +48,6 @@ void CEnemyTank::Unload() {
 }
 
 void CEnemyTank::PackLoadPacket(pPacket packet) {
-	PackUpdatableLoadPacket(packet);
 	PackRenderableLoadPacket(packet);
 	PackBodyLoadPacket(packet);
 
@@ -88,10 +88,68 @@ void CEnemyTank::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CEnemyTank::Serialize() {
-	return pRecord();
+	auto record = new CEnemyTankRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_spawned = IsSpawned();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	float velocity_x;
+	float velocity_y;
+	GetBodyVelocity(velocity_x, velocity_y);
+	record->velocity_x = velocity_x;
+	record->velocity_y = velocity_y;
+
+	record->normal_x = normal_x;
+	record->normal_y = normal_y;
+
+	record->movement_x = movement_x;
+	record->movement_y = movement_y;
+
+	return record;
 }
 
 void CEnemyTank::Deserialize(pRecord record) {
+	auto enemy_tank_record = static_cast<pEnemyTankRecord>(record);
+
+	if (IsActive() != enemy_tank_record->is_active) {
+		SetActive(enemy_tank_record->is_active);
+	}
+
+	if (IsVisible() != enemy_tank_record->is_visible) {
+		SetVisible(enemy_tank_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != enemy_tank_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(enemy_tank_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != enemy_tank_record->is_awake) {
+		GetPhysicsBody()->SetAwake(enemy_tank_record->is_awake);
+	}
+
+	if (IsSpawned() != enemy_tank_record->is_spawned) {
+		SetSpawned(enemy_tank_record->is_spawned);
+	}
+
+	SetBodyPosition(enemy_tank_record->position_x, enemy_tank_record->position_y);
+	SetBodyVelocity(enemy_tank_record->velocity_x, enemy_tank_record->velocity_y);
+
+	normal_x = enemy_tank_record->normal_x;
+	normal_y = enemy_tank_record->normal_y;
+
+	movement_x = enemy_tank_record->movement_x;
+	movement_y = enemy_tank_record->movement_y;
 }
 
 void CEnemyTank::OnSpawn(float x, float y) {

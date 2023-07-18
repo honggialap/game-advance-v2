@@ -7,12 +7,14 @@
 class CEventSender;
 struct CEvent {
 public:
-	CEventSender& sender;
+	CEventSender* sender;
 	EventType event_type = EEventType::INVALID_EVENT;
 
-public:
-	CEvent(CEventSender& sender, EventType event_type);
-	virtual ~CEvent() = 0;
+	CEvent(CEventSender* sender, EventType event_type)
+		: sender(sender)
+		, event_type(event_type)
+	{}
+	virtual ~CEvent() = 0 {}
 };
 typedef CEvent* pEvent;
 

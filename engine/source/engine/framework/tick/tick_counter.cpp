@@ -19,3 +19,7 @@ Tick CTickCounter::GetTickPerGameState() {
 void CTickCounter::SetTickPerGameState(Tick value) {
 	tick_per_game_state = value;
 }
+
+Tick CTickCounter::GetDropTick() {
+	return latest_tick - (tick_per_game_state * 2);
+}

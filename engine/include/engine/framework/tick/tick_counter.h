@@ -8,6 +8,7 @@ class CTickCounter {
 private:
 	Tick latest_tick = 0;
 	Tick tick_per_game_state = 0;
+	Tick drop_tick = 0;
 
 public:
 	Tick GetLatestTick();
@@ -16,6 +17,8 @@ public:
 
 	Tick GetTickPerGameState();
 	void SetTickPerGameState(Tick value);
+
+	Tick GetDropTick();
 };
 typedef CTickCounter* pTickCounter;
 

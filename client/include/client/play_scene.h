@@ -5,6 +5,9 @@
 #include "engine/framework/framework.h"
 #include "client/framework/framework.h"
 
+#include "client/logic/command/move_command.h"
+#include "client/logic/command/shoot_command.h"
+
 class CGameClient;
 class CPlayScene
 	: public CScene
@@ -25,6 +28,7 @@ protected:
 
 	enum class EState {
 		LOADING,
+		SYNC,
 		RUN,
 		DONE
 	};
@@ -59,12 +63,17 @@ public:
 	void HandleEndLoadPacket(pPacket packet);
 	void SendLoadDonePacket();
 
-	void SendMovePacket(pCommand command);
-	void SendShootPacket(pCommand command);
+	void HandleStartSyncPacket(pPacket packet);
+	void SendSyncPacket();
+	void HandleSyncPacket(pPacket packet);
+	void SendSyncDonePacket();
 
 	void HandleStartGamePacket(pPacket packet);
 	void HandleStatePacket(pPacket packet);
 	void HandleEndGamePacket(pPacket packet);
+
+	void SendMovePacket(Tick tick, pMoveCommand command);
+	void SendShootPacket(Tick tick, pShootCommand command);
 };
 typedef CPlayScene* pPlayScene;
 

@@ -193,6 +193,7 @@
     <ClInclude Include="include\client\logic\actor\headquarter.h" />
     <ClInclude Include="include\client\logic\actor\tank\bullet.h" />
     <ClInclude Include="include\client\logic\actor\tank\tank.h" />
+    <ClInclude Include="include\client\logic\event\bullet_impact_event.h" />
     <ClInclude Include="include\client\logic\logic.h" />
     <ClInclude Include="include\client\logic\actor\pick_up\bomb.h" />
     <ClInclude Include="include\client\logic\actor\pick_up\extra_life.h" />
@@ -220,6 +221,8 @@
     <ClInclude Include="include\client\framework\network\client_object.h" />
     <ClInclude Include="include\client\framework\network\client_scene.h" />
     <ClInclude Include="include\client\lobby_scene.h" />
+    <ClInclude Include="include\client\logic\command\move_command.h" />
+    <ClInclude Include="include\client\logic\command\shoot_command.h" />
     <ClInclude Include="include\client\play_scene.h" />
     <ClInclude Include="include\game_client.h" />
     <ClInclude Include="include\lobby_scene.h" />

@@ -36,6 +36,9 @@ void CHeadquarter::LoadFromPacket(pPacket packet) {
 }
 
 void CHeadquarter::HandleStatePacket(pPacket packet) {
+	uint8_t state;
+	*packet >> state;
+	SetState(EHeadquarterState(state));
 }
 
 void CHeadquarter::Render(sf::RenderWindow& window) {
@@ -43,7 +46,14 @@ void CHeadquarter::Render(sf::RenderWindow& window) {
 	float render_y;
 	GetBodyPosition(render_x, render_y);
 
-	auto sprite = GetSprite(1);
+	SpriteID sprite_id;
+	switch (state) {
+	case HQ_IDLE: sprite_id = 1; break;
+	case HQ_DESTROYED: sprite_id = 2; break;
+	default: sprite_id = 1; break;
+	}
+
+	auto sprite = GetSprite(sprite_id);
 	sprite->setPosition(
 		render_x,
 		-render_y + window.getSize().y

@@ -1,5 +1,6 @@
 #include "server/logic/actor/pick_up/bomb.h"
 #include "server/play_scene.h"
+#include "server/logic/record/pick_up/bomb_record.h"
 
 CBomb::CBomb(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -76,10 +77,50 @@ void CBomb::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CBomb::Serialize() {
-	return pRecord();
+	auto record = new CBombRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_spawned = IsSpawned();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	return record;
 }
 
 void CBomb::Deserialize(pRecord record) {
+	auto bomb_record = static_cast<pBombRecord>(record);
+
+	if (IsActive() != bomb_record->is_active) {
+		SetActive(bomb_record->is_active);
+	}
+
+	if (IsVisible() != bomb_record->is_visible) {
+		SetVisible(bomb_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != bomb_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(bomb_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != bomb_record->is_awake) {
+		GetPhysicsBody()->SetAwake(bomb_record->is_awake);
+	}
+
+	if (IsSpawned() != bomb_record->is_spawned) {
+		SetSpawned(bomb_record->is_spawned);
+	}
+
+	SetBodyPosition(bomb_record->position_x, bomb_record->position_y);
 }
 
 void CBomb::OnSpawn(float x, float y) {

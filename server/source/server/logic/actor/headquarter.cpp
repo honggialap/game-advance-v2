@@ -1,5 +1,6 @@
 #include "server/logic/actor/headquarter.h"
 #include "server/play_scene.h"
+#include "server/logic/record/headquarter_record.h"
 
 CHeadquarter::CHeadquarter(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -57,12 +58,9 @@ void CHeadquarter::Render(sf::RenderWindow& window) {
 
 	SceneID sprite_id;
 	switch (state) {
-	case HQ_IDLE: sprite_id = 1;
-		break;
-	case HQ_DESTROYED: sprite_id = 2;
-		break;
-	default: sprite_id = 1;
-		break;
+	case HQ_IDLE: sprite_id = 1; break;
+	case HQ_DESTROYED: sprite_id = 2; break;
+	default: sprite_id = 1; break;
 	}
 
 	auto sprite = GetSprite(sprite_id);
@@ -83,8 +81,37 @@ void CHeadquarter::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CHeadquarter::Serialize() {
-	return pRecord();
+	auto record = new CHeadquarterRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->state = GetState();
+
+	return record;
 }
 
 void CHeadquarter::Deserialize(pRecord record) {
+	auto headquarter_record = static_cast<pHeadquarterRecord>(record);
+
+	if (IsActive() != headquarter_record->is_active) {
+		SetActive(headquarter_record->is_active);
+	}
+
+	if (IsVisible() != headquarter_record->is_visible) {
+		SetVisible(headquarter_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != headquarter_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(headquarter_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != headquarter_record->is_awake) {
+		GetPhysicsBody()->SetAwake(headquarter_record->is_awake);
+	}
+
+	SetState(headquarter_record->state);
 }

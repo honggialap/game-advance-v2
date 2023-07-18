@@ -20,8 +20,6 @@ class CGameMaster final
 	: public CServerObject
 	, public CGameObject
 	, public CNetworkObject
-	, public CInputHandler
-	, public CCommandable
 	, public CUpdatable
 	, public CEventSender
 	, public CEventReceiver
@@ -54,15 +52,13 @@ public:
 
 	EGameMasterState GetState() { return state; }
 	void SetState(EGameMasterState new_state) { state = new_state; }
+	void ChangeState(EGameMasterState new_state);
 
 	virtual void Load(float position_x, float position_y, json& data) override final;
 	virtual void LoadFromFile(std::string file_path) override final;
 	virtual void Unload() override final;
 
 	virtual void PackLoadPacket(pPacket packet) override final;
-
-	virtual void HandleInput(Tick tick) override final;
-	virtual void ExecuteCommand(pCommand command) override final;
 
 	virtual void Update(float elapsed_ms) override final;
 	virtual void Render(sf::RenderWindow& window) override final;

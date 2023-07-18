@@ -5,23 +5,23 @@
 #include "engine/framework/command/command.h"
 
 struct CShootCommand : public CCommand {
-	int8_t normal_x = 0;
-	int8_t normal_y = 0;
+	int8_t normal_x;
+	int8_t normal_y;
 
 	CShootCommand(
-		bool is_client
-		, CommandableID id
-		, NetworkID network_id
-		, int8_t movement_x
-		, int8_t movement_y
+		CommandableID id
+		, NetworkID network_object_id
+		, int8_t normal_x
+		, int8_t normal_y
 	)
-		: CCommand(is_client, id, network_object_id)
+		: CCommand(true, id, network_object_id)
 		, normal_x(normal_x)
 		, normal_y(normal_y)
 	{
 		type = ECommandType::SHOOT;
 	}
+	~CShootCommand() {}
 };
 typedef CShootCommand* pShootCommand;
 
-#endif //!__SHOOT_COMMAND_H__
+#endif // !__SHOOT_COMMAND_H__

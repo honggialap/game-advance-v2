@@ -26,6 +26,7 @@ protected:
 
 	enum class EState{
 		LOADING,
+		SYNC,
 		RUN,
 		DONE
 	};
@@ -36,10 +37,13 @@ protected:
 	SceneID next_play_scene_id = 0;
 	SceneID lobby_scene_id = 0;
 	float count_down = 0.0f;
+	bool win = false;
 
 public:
 	CPlayScene(CGameServer& game_server);
 	~CPlayScene();
+
+	void EndGame(bool value);
 
 	CGameServer& GetGameServer() { return game_server; }
 	virtual pGameObject CreateGameObject(EActorType actor_type, std::string name) override final;
@@ -56,17 +60,21 @@ public:
 	virtual bool ProcessPacket(std::shared_ptr<CPacket> packet) override final;
 
 	void SendLoadPacket();
+
 	void SendHeadLoadPacket();
 	void SendBodyLoadPacket(GameObjectID id);
 	void SendEndLoadPacket();
+	void HandleLoadDonePacket(pPacket packet);
+
+	void SendStartSyncPacket();
+	void HandleSyncPacket(pPacket packet);
+	void SendSyncPacket(ClientID client_id, Tick reply_tick);
+	void HandleSyncDonePacket(pPacket packet);
 
 	void SendStartGamePacket();
 	void SendStatePacket();
-	void SendEndGamePacket();
-	void SendStartNextLevelPacket();
-	void SendBackToLobbyPacket();
+	void SendEndGamePacket(bool win);
 
-	void HandleLoadDonePacket(pPacket packet);
 	void HandleMovePacket(pPacket packet);
 	void HandleShootPacket(pPacket packet);
 };

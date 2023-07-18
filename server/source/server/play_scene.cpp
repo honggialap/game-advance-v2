@@ -547,6 +547,15 @@ void CPlayScene::Update(float elapsed_ms) {
 	case CPlayScene::EState::LOADING: {
 		if (GetGameServer().AllPlayersReady()) {
 			GetGameServer().ResetPlayerReadyStatus();
+			SendStartSyncPacket();
+			SetState(EState::SYNC);
+		}
+		break;
+	}
+
+	case CPlayScene::EState::SYNC: {
+		if (GetGameServer().AllPlayersReady()) {
+			GetGameServer().ResetPlayerReadyStatus();
 			SendStartGamePacket();
 			SetState(EState::RUN);
 		}
@@ -560,7 +569,6 @@ void CPlayScene::Update(float elapsed_ms) {
 			Tick deserialize_tick = GetRollbackTick() - 1;
 			Tick rolling_back_tick = GetRollbackTick();
 
-			CCommandManager::TrimServerCommandsOnly(rolling_back_tick, last_tick);
 			CRecordManager::TrimRecords(rolling_back_tick, last_tick);
 			CRecordManager::Deserialze(deserialize_tick);
 
@@ -577,7 +585,7 @@ void CPlayScene::Update(float elapsed_ms) {
 		}
 
 		Tick latest_tick = CServerTickCounter::GetLatestTick();
-
+		Tick tick_per_game_state = GetTickPerGameState();
 		CInputManager::HandleInput(latest_tick);
 		CCommandManager::ExecuteCommands(latest_tick);
 		CUpdateManager::Update(elapsed_ms);
@@ -585,9 +593,7 @@ void CPlayScene::Update(float elapsed_ms) {
 		CEventManager::HandleEvent();
 		CRecordManager::Serialize(latest_tick);
 
-		Tick tick_per_game_state = CServerTickCounter::GetTickPerGameState();
-		Tick drop_tick = latest_tick - (tick_per_game_state * 2);
-
+		Tick drop_tick = GetDropTick();
 		CCommandManager::TrimCommands(drop_tick);
 		CRecordManager::TrimRecords(drop_tick);
 
@@ -596,7 +602,7 @@ void CPlayScene::Update(float elapsed_ms) {
 			&& latest_tick % tick_per_game_state == 0
 			)
 		{
-			//SendStatePacket();
+			SendStatePacket();
 		}
 
 		CServerTickCounter::IncreaseLatestTick();
@@ -605,6 +611,13 @@ void CPlayScene::Update(float elapsed_ms) {
 	}
 
 	case CPlayScene::EState::DONE: {
+		if (count_down > 0.0f) {
+			count_down -= elapsed_ms;
+		}
+		else {
+			if (win) GetGameServer().PlayScene(next_play_scene_id);
+			else GetGameServer().PlayScene(lobby_scene_id);
+		}
 		break;
 	}
 	default: break;
@@ -628,6 +641,16 @@ bool CPlayScene::ProcessPacket(std::shared_ptr<CPacket> packet) {
 		return true;
 	}
 
+	case SYNC: {
+		HandleSyncPacket(packet.get());
+		return true;
+	}
+
+	case DONE_SYNC: {
+		HandleSyncDonePacket(packet.get());
+		return true;
+	}
+
 	case PLAYER_MOVE: {
 		HandleMovePacket(packet.get());
 		return true;
@@ -641,6 +664,8 @@ bool CPlayScene::ProcessPacket(std::shared_ptr<CPacket> packet) {
 	default: return true;
 	}
 }
+
+
 
 void CPlayScene::SendLoadPacket() {
 	SendHeadLoadPacket();
@@ -692,6 +717,43 @@ void CPlayScene::SendEndLoadPacket() {
 	GetGameServer().SendAll(packet);
 }
 
+void CPlayScene::HandleLoadDonePacket(pPacket packet) {
+	PlayerID id;
+	*packet >> id;
+	GetGameServer().PlayerReady(id);
+}
+
+
+
+void CPlayScene::SendStartSyncPacket() {
+	auto packet = std::make_shared<CPacket>(START_SYNC);
+	GetGameServer().SendAll(packet);
+}
+
+void CPlayScene::HandleSyncPacket(pPacket packet) {
+	ClientID client_id;
+	*packet >> client_id;
+
+	Tick reply_tick;
+	*packet >> reply_tick;
+
+	SendSyncPacket(client_id, reply_tick);
+}
+
+void CPlayScene::SendSyncPacket(ClientID client_id, Tick reply_tick) {
+	auto packet = std::make_shared<CPacket>(SYNC);
+	*packet << reply_tick;
+	GetGameServer().Send(client_id, packet);
+}
+
+void CPlayScene::HandleSyncDonePacket(pPacket packet) {
+	PlayerID id;
+	*packet >> id;
+	GetGameServer().PlayerReady(id);
+}
+
+
+
 void CPlayScene::SendStartGamePacket() {
 	auto packet = std::make_shared<CPacket>(START_GAME);
 	GetGameServer().SendAll(packet);
@@ -705,7 +767,7 @@ void CPlayScene::SendStatePacket() {
 
 	auto& records = CRecordManager::GetRecordsAtTick(send_tick);
 
-	uint16_t records_count = records.size();
+	GameObjectID records_count = records.size();
 	*packet << records_count;
 
 	for (auto record : records) {
@@ -718,47 +780,78 @@ void CPlayScene::SendStatePacket() {
 	GetGameServer().SendAll(packet);
 }
 
-void CPlayScene::SendEndGamePacket() {
+void CPlayScene::SendEndGamePacket(bool win) {
 	auto packet = std::make_shared<CPacket>(END_GAME);
-
+	bool send_win = win;
+	*packet << send_win;
 	GetGameServer().SendAll(packet);
-}
-
-void CPlayScene::SendStartNextLevelPacket() {
-	auto packet = std::make_shared<CPacket>(START_PLAY_SCENE);
-
-	GetGameServer().SendAll(packet);
-}
-
-void CPlayScene::SendBackToLobbyPacket() {
-	auto packet = std::make_shared<CPacket>(BACK_TO_LOBBY_SCENE);
-
-	GetGameServer().SendAll(packet);
-}
-
-void CPlayScene::HandleLoadDonePacket(pPacket packet) {
-	PlayerID id;
-	*packet >> id;
-	GetGameServer().PlayerReady(id);
 }
 
 void CPlayScene::HandleMovePacket(pPacket packet) {
 	Tick receive_tick;
 	*packet >> receive_tick;
 
-	if (receive_tick < GetLatestTick() - (GetTickPerGameState() * 2))
-		return;
+	if (receive_tick < GetDropTick()) return;
+	if (receive_tick < GetLatestTick()) {
+		SetRollback(true);
+		SetRollbackTick(receive_tick);
+	}
 
+	NetworkID network_id;
+	*packet >> network_id;
 
+	int8_t movement_x;
+	int8_t movement_y;
+	*packet >> movement_x >> movement_y;
 
+	auto network_object = GetNetworkObject(network_id);
+	auto commandable = dynamic_cast<pCommandable>(network_object);
+	auto commandable_id = commandable->GetCommandableID();
+
+	auto move_command = new CMoveCommand(
+		true
+		, commandable_id, network_id
+		, movement_x, movement_y
+	);
+
+	AddCommandAtTick(receive_tick, move_command);
 }
 
 void CPlayScene::HandleShootPacket(pPacket packet) {
 	Tick receive_tick;
 	*packet >> receive_tick;
 
-	if (receive_tick < GetLatestTick() - (GetTickPerGameState() * 2))
-		return;
+	if (receive_tick < GetDropTick()) return;
+	if (receive_tick < GetLatestTick()) {
+		SetRollback(true);
+		SetRollbackTick(receive_tick);
+	}
+
+	NetworkID network_id;
+	*packet >> network_id;
+
+	int8_t normal_x;
+	int8_t normal_y;
+	*packet >> normal_x >> normal_y;
+
+	auto network_object = GetNetworkObject(network_id);
+	auto commandable = dynamic_cast<pCommandable>(network_object);
+	auto commandable_id = commandable->GetCommandableID();
+
+	auto shoot_command = new CShootCommand(
+		true
+		, commandable_id, network_id
+		, normal_x, normal_y
+	);
+
+	AddCommandAtTick(receive_tick, shoot_command);
+}
 
 
+
+void CPlayScene::EndGame(bool value) {
+	win = value;
+
+	SetState(EState::DONE);
+	SendEndGamePacket(value);
 }

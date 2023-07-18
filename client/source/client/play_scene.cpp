@@ -16,19 +16,19 @@ pGameObject CPlayScene::CreateGameObject(EActorType actor_type, std::string name
 
 	case GAME_MASTER:	return new CGameMaster(*this, name);
 	case HEADQUARTER:	return new CHeadquarter(*this, name);
-	
+
 	case PLAYER_TANK:	return new CPlayerTank(*this, name);
 	case PLAYER_BULLET:	return new CPlayerBullet(*this, name);
 	case ENEMY_TANK:	return new CEnemyTank(*this, name);
 	case ENEMY_BULLET:	return new CEnemyBullet(*this, name);
-	
+
 	case EXTRA_LIFE:	return new CExtraLife(*this, name);
 	case POWER_UP:		return new CPowerUp(*this, name);
 	case SHIELD:		return new CShield(*this, name);
 	case BOMB:			return new CBomb(*this, name);
 	case FREEZE:		return new CFreeze(*this, name);
 	case FENCE:			return new CFence(*this, name);
-	
+
 	case BOUND:			return new CBound(*this, name);
 	case BRICK:			return new CBrick(*this, name);
 	case STEEL:			return new CSteel(*this, name);
@@ -57,42 +57,41 @@ void CPlayScene::Unload() {
 
 void CPlayScene::Update(float elapsed_ms) {
 	switch (state) {
-	case CPlayScene::EState::LOADING: {
+	case CPlayScene::EState::SYNC: {
+		IncreaseSyncTick();
 		break;
 	}
 
 	case CPlayScene::EState::RUN: {
-		
-		if (CClientTickCounter::IsReconcile()) {
-			Tick reconcilating_tick = CClientTickCounter::GetReconcileTick() + 1;
-			Tick latest_tick = CClientTickCounter::GetLatestTick();
+		Tick latest_tick = CClientTickCounter::GetLatestTick();
 
+		if (CClientTickCounter::IsReconcile()) {
+			SetReconcile(false);
+			Tick reconcilating_tick = CClientTickCounter::GetReconcileTick() + 1;
 			for (reconcilating_tick; reconcilating_tick < latest_tick; reconcilating_tick++) {
 				CCommandManager::ExecuteCommands(reconcilating_tick);
 				CUpdateManager::Update(elapsed_ms);
 				CWorld::UpdatePhysicsWorld(elapsed_ms);
 				CEventManager::HandleEvent();
 			}
-
-			CInputManager::HandleInput(latest_tick);
-			CCommandManager::ExecuteCommands(reconcilating_tick);
-			CUpdateManager::Update(elapsed_ms);
-			CWorld::UpdatePhysicsWorld(elapsed_ms);
-			CEventManager::HandleEvent();
-
-			Tick tick_per_game_state = CClientTickCounter::GetTickPerGameState();
-			CCommandManager::TrimCommands(latest_tick - tick_per_game_state);
-
-			CClientTickCounter::IncreaseLatestTick();
 		}
 		
+		CInputManager::HandleInput(latest_tick);
+		CCommandManager::ExecuteCommands(latest_tick);
+		CUpdateManager::Update(elapsed_ms);
+		CWorld::UpdatePhysicsWorld(elapsed_ms);
+		CEventManager::HandleEvent();
+
+		Tick drop_tick = GetDropTick();
+		CCommandManager::TrimCommands(drop_tick);
+
+		CClientTickCounter::IncreaseLatestTick();
+
 		break;
 	}
 
-	case CPlayScene::EState::DONE: {
-		break;
-	}
-
+	case CPlayScene::EState::LOADING:
+	case CPlayScene::EState::DONE:
 	default: break;
 	}
 }
@@ -127,6 +126,16 @@ bool CPlayScene::ProcessPacket(std::shared_ptr<CPacket> packet) {
 		return true;
 	}
 
+	case START_SYNC: {
+		HandleStartSyncPacket(packet.get());
+		return true;
+	}
+
+	case SYNC: {
+		HandleSyncPacket(packet.get());
+		return true;
+	}
+
 	case START_GAME: {
 		HandleStartGamePacket(packet.get());
 		return true;
@@ -145,6 +154,8 @@ bool CPlayScene::ProcessPacket(std::shared_ptr<CPacket> packet) {
 	default: return true;
 	}
 }
+
+
 
 void CPlayScene::HandleHeadLoadPacket(pPacket packet) {
 	Tick tick_per_game_state;
@@ -189,26 +200,62 @@ void CPlayScene::SendLoadDonePacket() {
 	GetGameClient().Send(packet);
 }
 
-void CPlayScene::SendMovePacket(pCommand command) {
-	auto packet = std::make_shared<CPacket>(PLAYER_MOVE);
+
+
+void CPlayScene::HandleStartSyncPacket(pPacket packet) {
+	SetState(EState::SYNC);
+	SendSyncPacket();
+}
+
+void CPlayScene::SendSyncPacket() {
+	auto packet = std::make_shared<CPacket>(SYNC);
+
+	ClientID client_id = GetGameClient().GetClientId();
+	*packet << client_id;
+
+	Tick sync_tick = GetSyncTick();
+	*packet << sync_tick;
 
 	GetGameClient().Send(packet);
 }
 
-void CPlayScene::SendShootPacket(pCommand command) {
-	auto packet = std::make_shared<CPacket>(PLAYER_SHOOT);
+void CPlayScene::HandleSyncPacket(pPacket packet) {
+	Tick reply_tick;
+	*packet >> reply_tick;
+
+	Tick latest_tick = (GetSyncTick() - reply_tick) / 2;
+	SetLatestTick(latest_tick);
+
+	SendSyncDonePacket();
+}
+
+void CPlayScene::SendSyncDonePacket() {
+	auto packet = std::make_shared<CPacket>(DONE_SYNC);
+
+	PlayerID id = GetGameClient().GetPlayerID();
+	*packet << id;
 
 	GetGameClient().Send(packet);
 }
+
+
 
 void CPlayScene::HandleStartGamePacket(pPacket packet) {
 	SetState(EState::RUN);
 }
 
 void CPlayScene::HandleStatePacket(pPacket packet) {
+	Tick receive_tick;
+	*packet >> receive_tick;
+
+	if (receive_tick < GetDropTick()) return;
+
+	SetReconcile(true);
+	SetReconcileTick(receive_tick);
+
 	GameObjectID record_count;
 	*packet >> record_count;
-	
+
 	for (auto record = 0; record < record_count; record++) {
 		NetworkID network_id;
 		*packet >> network_id;
@@ -217,8 +264,49 @@ void CPlayScene::HandleStatePacket(pPacket packet) {
 		auto client_object = dynamic_cast<pClientObject>(network_object);
 		client_object->HandleStatePacket(packet);
 	}
-
 }
 
 void CPlayScene::HandleEndGamePacket(pPacket packet) {
+	bool win;
+	*packet >> win;
+
+	if (win) {
+		GetGameClient().PlayScene(play_scene_id);
+	}
+	else {
+		GetGameClient().PlayScene(lobby_scene_id);
+		GetGameClient().Disconnect();
+	}
+}
+
+
+
+void CPlayScene::SendMovePacket(Tick tick, pMoveCommand command) {
+	auto packet = std::make_shared<CPacket>(PLAYER_MOVE);
+	Tick send_tick = tick;
+	*packet << send_tick;
+
+	NetworkID network_id = command->network_object_id;
+	*packet << network_id;
+
+	int8_t movement_x = command->movement_x;
+	int8_t movement_y = command->movement_y;
+	*packet << movement_x << movement_y;
+
+	GetGameClient().Send(packet);
+}
+
+void CPlayScene::SendShootPacket(Tick tick, pShootCommand command) {
+	auto packet = std::make_shared<CPacket>(PLAYER_SHOOT);
+	Tick send_tick = tick;
+	*packet << send_tick;
+
+	NetworkID network_id = command->network_object_id;
+	*packet << network_id;
+
+	int8_t normal_x = command->normal_x;
+	int8_t normal_y = command->normal_y;
+	*packet << normal_x << normal_y;
+
+	GetGameClient().Send(packet);
 }

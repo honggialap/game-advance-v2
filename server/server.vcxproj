@@ -182,6 +182,7 @@
     <ClInclude Include="include\server\logic\actor\terrain\fence_spawner.h" />
     <ClInclude Include="include\server\logic\command\move_command.h" />
     <ClInclude Include="include\server\logic\command\shoot_command.h" />
+    <ClInclude Include="include\server\logic\event\bullet_impact_event.h" />
     <ClInclude Include="include\server\logic\logic.h" />
     <ClInclude Include="include\server\play_scene.h" />
     <ClInclude Include="include\server\framework\tick\server_tick_counter.h" />

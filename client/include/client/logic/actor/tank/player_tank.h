@@ -27,11 +27,11 @@ class CPlayerTank
 protected:
 	CPlayScene& play_scene;
 
-	int8_t normal_x;
-	int8_t normal_y;
-
 	int8_t movement_x;
 	int8_t movement_y;
+
+	int8_t normal_x;
+	int8_t normal_y;
 
 	float speed;
 

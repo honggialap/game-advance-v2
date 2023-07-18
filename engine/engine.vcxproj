@@ -104,7 +104,6 @@
     <ClCompile Include="source\engine\framework\audio\sound_buffers.cpp" />
     <ClCompile Include="source\engine\framework\command\commandable.cpp" />
     <ClCompile Include="source\engine\framework\command\command_manager.cpp" />
-    <ClCompile Include="source\engine\framework\event\event.cpp" />
     <ClCompile Include="source\engine\framework\event\event_manager.cpp" />
     <ClCompile Include="source\engine\framework\event\event_receiver.cpp" />
     <ClCompile Include="source\engine\framework\event\event_sender.cpp" />

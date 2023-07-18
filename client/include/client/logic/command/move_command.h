@@ -5,24 +5,24 @@
 #include "engine/framework/command/command.h"
 
 struct CMoveCommand : public CCommand {
-	int8_t movement_x = 0;
-	int8_t movement_y = 0;
+	int8_t movement_x;
+	int8_t movement_y;
 
 	CMoveCommand(
-		bool is_client
-		, CommandableID id
-		, NetworkID network_id
+		CommandableID id
+		, NetworkID network_object_id
 		, int8_t movement_x
 		, int8_t movement_y
 	)
-		: CCommand(is_client, id, network_object_id)
+		: CCommand(true, id, network_object_id)
 		, movement_x(movement_x)
 		, movement_y(movement_y)
 	{
 		type = ECommandType::MOVE;
 	}
+	~CMoveCommand() {}
+
 };
 typedef CMoveCommand* pMoveCommand;
-
 
 #endif // !__MOVE_COMMAND_H__

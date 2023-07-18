@@ -1,6 +1,7 @@
 #include "server/logic/actor/terrain/brick.h"
-#include "server/logic/actor/headquarter.h"
+#include "server/logic/actor/terrain/fence_spawner.h"
 #include "server/play_scene.h"
+#include "server/logic/record/terrain/brick_record.h"
 
 CBrick::CBrick(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -97,10 +98,35 @@ void CBrick::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CBrick::Serialize() {
-	return pRecord();
+	auto record = new CBrickRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	return record;
 }
 
 void CBrick::Deserialize(pRecord record) {
+	auto brick_record = static_cast<pBrickRecord>(record);
+
+	if (IsActive() != brick_record->is_active) {
+		SetActive(brick_record->is_active);
+	}
+
+	if (IsVisible() != brick_record->is_visible) {
+		SetVisible(brick_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != brick_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(brick_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != brick_record->is_awake) {
+		GetPhysicsBody()->SetAwake(brick_record->is_awake);
+	}
 }
 
 

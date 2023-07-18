@@ -1,6 +1,7 @@
 #include "server/logic/actor/terrain/steel.h"
 #include "server/logic/actor/terrain/fence_spawner.h"
 #include "server/play_scene.h"
+#include "server/logic/record/terrain/steel_record.h"
 
 CSteel::CSteel(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -97,8 +98,33 @@ void CSteel::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CSteel::Serialize() {
-	return pRecord();
+	auto record = new CSteelRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	return record;
 }
 
 void CSteel::Deserialize(pRecord record) {
+	auto steel_record = static_cast<pSteelRecord>(record);
+
+	if (IsActive() != steel_record->is_active) {
+		SetActive(steel_record->is_active);
+	}
+
+	if (IsVisible() != steel_record->is_visible) {
+		SetVisible(steel_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != steel_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(steel_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != steel_record->is_awake) {
+		GetPhysicsBody()->SetAwake(steel_record->is_awake);
+	}
 }

@@ -1,4 +1,5 @@
 #include "server/logic/actor/game_master.h"
+#include "server/logic/record/game_master_record.h"
 #include "server/play_scene.h"
 
 CGameMaster::CGameMaster(CPlayScene& play_scene, std::string name)
@@ -6,13 +7,11 @@ CGameMaster::CGameMaster(CPlayScene& play_scene, std::string name)
 	, CServerObject(play_scene)
 	, CGameObject(play_scene, EActorType::GAME_MASTER, name)
 	, CNetworkObject(play_scene)
-	, CInputHandler(play_scene)
-	, CCommandable(play_scene, GetID())
 	, CUpdatable(play_scene)
 	, CEventSender(play_scene)
 	, CEventReceiver(play_scene)
 	, CRecordable(play_scene, GetID())
-	, CRenderable(play_scene) 
+	, CRenderable(play_scene)
 	, CSprites(play_scene) {
 	//SubcribeEvent(EEventType::INVALID_EVENT);
 	ObtainNetworkID();
@@ -21,9 +20,28 @@ CGameMaster::CGameMaster(CPlayScene& play_scene, std::string name)
 CGameMaster::~CGameMaster() {
 }
 
+void CGameMaster::ChangeState(EGameMasterState new_state) {
+	state = new_state;
+	switch (new_state) {
+	case GM_RUN: {
+		SpawnPlayerTank(1);
+		SpawnPlayerTank(2);
+		break;
+	}
+
+	case GM_DONE: {
+
+		break;
+	}
+
+	case GM_SET_UP:
+	default: break;
+	}
+}
+
 void CGameMaster::Load(float position_x, float position_y, json& data) {
 	SetPosition(position_x, position_y);
-	
+
 	LoadUpdatableFromJson(data);
 	LoadRenderableFromJson(data);
 	LoadPlayerTankSpawner(data);
@@ -58,18 +76,10 @@ void CGameMaster::PackLoadPacket(pPacket packet) {
 	*packet << resource_path;
 }
 
-void CGameMaster::HandleInput(Tick tick) {
-}
-
-void CGameMaster::ExecuteCommand(pCommand command) {
-}
-
 void CGameMaster::Update(float elapsed_ms) {
 	switch (state) {
 	case GM_SET_UP: {
-		SpawnPlayerTank(1);
-		SpawnPlayerTank(2);
-		state = GM_RUN;
+		ChangeState(EGameMasterState::GM_RUN);
 		break;
 	}
 
@@ -85,10 +95,8 @@ void CGameMaster::Update(float elapsed_ms) {
 		}
 		break;
 	}
-	case GM_DONE: {
 
-		break;
-	}
+	case GM_DONE:
 	default: break;
 	}
 }
@@ -107,8 +115,28 @@ void CGameMaster::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CGameMaster::Serialize() {
-	return pRecord();
+	auto record = new CGameMasterRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->state = GetState();
+	record->spawn_interval_coutner = spawn_interval_counter;
+
+	return record;
 }
 
 void CGameMaster::Deserialize(pRecord record) {
+	auto game_master_record = static_cast<pGameMasterRecord>(record);
+
+	if (IsActive() != game_master_record->is_active) {
+		SetActive(game_master_record->is_active);
+	}
+
+	if (IsVisible() != game_master_record->is_visible) {
+		SetVisible(game_master_record->is_visible);
+	}
+
+	SetState(game_master_record->state);
+	spawn_interval_counter = game_master_record->spawn_interval_coutner;
 }

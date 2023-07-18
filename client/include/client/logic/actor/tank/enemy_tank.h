@@ -11,13 +11,15 @@ class CEnemyTank
 	, public CGameObject
 	, public CNetworkObject
 	, public CRemoteObject
-	, public CUpdatable
 	, public CBody
 	, public CRenderable
 	, public CSprites
 {
 protected:
 	CPlayScene& play_scene;
+
+	int8_t normal_x;
+	int8_t normal_y;
 
 public:
 	CEnemyTank(CPlayScene& play_scene, std::string name);
@@ -31,7 +33,6 @@ public:
 	virtual void LoadFromPacket(pPacket packet) override final;
 	virtual void HandleStatePacket(pPacket packet) override final;
 
-	virtual void Update(float elapsed_ms) override final;
 	virtual void Render(sf::RenderWindow& window) override final;
 
 	virtual void OnCollisionEnter(CBody* other) override final;

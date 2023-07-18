@@ -1,5 +1,6 @@
 #include "server/logic/actor/pick_up/freeze.h"
 #include "server/play_scene.h"
+#include "server/logic/record/pick_up/freeze_record.h"
 
 CFreeze::CFreeze(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -75,10 +76,50 @@ void CFreeze::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CFreeze::Serialize() {
-	return pRecord();
+	auto record = new CFreezeRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_spawned = IsSpawned();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	return record;
 }
 
 void CFreeze::Deserialize(pRecord record) {
+	auto freeze_record = static_cast<pFreezeRecord>(record);
+
+	if (IsActive() != freeze_record->is_active) {
+		SetActive(freeze_record->is_active);
+	}
+
+	if (IsVisible() != freeze_record->is_visible) {
+		SetVisible(freeze_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != freeze_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(freeze_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != freeze_record->is_awake) {
+		GetPhysicsBody()->SetAwake(freeze_record->is_awake);
+	}
+
+	if (IsSpawned() != freeze_record->is_spawned) {
+		SetSpawned(freeze_record->is_spawned);
+	}
+
+	SetBodyPosition(freeze_record->position_x, freeze_record->position_y);
 }
 
 void CFreeze::OnSpawn(float x, float y) {

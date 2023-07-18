@@ -29,4 +29,7 @@
 #include "actor/terrain/ice.h"
 #include "actor/terrain/tree.h"
 
+#include "command/move_command.h"
+#include "command/shoot_command.h"
+
 #endif // !__SERVER_LOGIC_H__

@@ -11,12 +11,17 @@ private:
 	Tick reconcile_tick = 0;
 	bool reconcile_flag = false;
 
+	Tick sync_tick = 0;
+
 public:
 	Tick GetReconcileTick();
 	void SetReconcileTick(Tick value);
 
 	bool IsReconcile();
 	void SetReconcile(bool value);
+
+	Tick GetSyncTick();
+	void IncreaseSyncTick();
 };
 typedef CClientTickCounter* pClientTickCounter;
 

@@ -14,6 +14,8 @@ private:
 
 public:
 	void SetPlayerTankSpawner(PlayerID id, pPlayerTankSpawner spawner);
+
+	void SetSpawned(bool value) { is_spawned = value; }
 	bool IsSpawned() { return is_spawned; }
 
 	void Spawn(float x, float y);
@@ -23,7 +25,5 @@ public:
 	virtual void OnDespawn() = 0;
 };
 typedef CPlayerTankSpawnable* pPlayerTankSpawnable;
-
-
 
 #endif // !__PLAYER_TANK_SPAWNABLE_H__

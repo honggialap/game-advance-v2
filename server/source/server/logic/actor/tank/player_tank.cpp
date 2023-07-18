@@ -1,6 +1,7 @@
 #include "server/logic/actor/tank/player_tank.h"
 #include "server/logic/actor/tank/player_tank_spawner.h"
 #include "server/play_scene.h"
+#include "server/logic/record/tank/player_tank_record.h"
 
 CPlayerTank::CPlayerTank(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -93,10 +94,68 @@ void CPlayerTank::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CPlayerTank::Serialize() {
-	return pRecord();
+	auto record = new CPlayerTankRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_spawned = IsSpawned();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	float velocity_x;
+	float velocity_y;
+	GetBodyVelocity(velocity_x, velocity_y);
+	record->velocity_x = velocity_x;
+	record->velocity_y = velocity_y;
+
+	record->normal_x = normal_x;
+	record->normal_y = normal_y;
+
+	record->movement_x = movement_x;
+	record->movement_y = movement_y;
+
+	return record;
 }
 
 void CPlayerTank::Deserialize(pRecord record) {
+	auto player_tank_record = static_cast<pPlayerTankRecord>(record);
+
+	if (IsActive() != player_tank_record->is_active) {
+		SetActive(player_tank_record->is_active);
+	}
+
+	if (IsVisible() != player_tank_record->is_visible) {
+		SetVisible(player_tank_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != player_tank_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(player_tank_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != player_tank_record->is_awake) {
+		GetPhysicsBody()->SetAwake(player_tank_record->is_awake);
+	}
+
+	if (IsSpawned() != player_tank_record->is_spawned) {
+		SetSpawned(player_tank_record->is_spawned);
+	}
+
+	SetBodyPosition(player_tank_record->position_x, player_tank_record->position_y);
+	SetBodyVelocity(player_tank_record->velocity_x, player_tank_record->velocity_y);
+
+	normal_x = player_tank_record->normal_x;
+	normal_y = player_tank_record->normal_y;
+
+	movement_x = player_tank_record->movement_x;
+	movement_y = player_tank_record->movement_y;
 }
 
 void CPlayerTank::OnSpawn(float x, float y) {

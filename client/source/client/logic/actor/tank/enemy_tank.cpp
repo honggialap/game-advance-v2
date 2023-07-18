@@ -6,7 +6,6 @@ CEnemyTank::CEnemyTank(CPlayScene& play_scene, std::string name)
 	, CClientObject(play_scene)
 	, CGameObject(play_scene, EActorType::ENEMY_TANK, name)
 	, CNetworkObject(play_scene)
-	, CUpdatable(play_scene)
 	, CBody(play_scene)
 	, CRenderable(play_scene)
 	, CSprites(play_scene) {
@@ -27,7 +26,6 @@ void CEnemyTank::Unload() {
 }
 
 void CEnemyTank::LoadFromPacket(pPacket packet) {
-	LoadUpdatableFromPacket(packet);
 	LoadRenderableFromPacket(packet);
 	LoadBodyFromPacket(packet);
 
@@ -38,9 +36,40 @@ void CEnemyTank::LoadFromPacket(pPacket packet) {
 }
 
 void CEnemyTank::HandleStatePacket(pPacket packet) {
-}
+	bool is_visible;
+	*packet >> is_visible;
+	if (IsVisible() != is_visible) {
+		SetVisible(is_visible);
+	}
 
-void CEnemyTank::Update(float elapsed_ms) {
+	bool is_enable = false;
+	*packet >> is_enable;
+	if (GetPhysicsBody()->IsEnabled() != is_enable) {
+		GetPhysicsBody()->SetEnabled(is_enable);
+	}
+
+	bool is_awake = false;
+	*packet >> is_awake;
+	if (GetPhysicsBody()->IsAwake() != is_awake) {
+		GetPhysicsBody()->SetAwake(is_awake);
+	}
+
+	float position_x = 0.0f;
+	float position_y = 0.0f;
+	*packet >> position_x >> position_y;
+	SetBodyPosition(position_x, position_y);
+	SetLatestPosition(position_x, position_y);
+
+	float velocity_x = 0.0f;
+	float velocity_y = 0.0f;
+	*packet >> velocity_x >> velocity_y;
+	SetBodyVelocity(velocity_x, velocity_y);
+
+	int8_t normal_x = 0;
+	int8_t normal_y = 0;
+	*packet >> normal_x >> normal_y;
+	this->normal_x = normal_x;
+	this->normal_y = normal_y;
 }
 
 void CEnemyTank::Render(sf::RenderWindow& window) {

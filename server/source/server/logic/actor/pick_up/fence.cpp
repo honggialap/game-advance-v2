@@ -1,5 +1,6 @@
 #include "server/logic/actor/pick_up/fence.h"
 #include "server/play_scene.h"
+#include "server/logic/record/pick_up/fence_record.h"
 
 CFence::CFence(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -76,10 +77,50 @@ void CFence::HandleEvent(pEvent incomming_event) {
 }
 
 pRecord CFence::Serialize() {
-	return pRecord();
+	auto record = new CFenceRecord(GetRecordableID(), GetNetworkID());
+
+	record->is_active = IsActive();
+	record->is_visible = IsVisible();
+
+	record->is_enable = GetPhysicsBody()->IsEnabled();
+	record->is_awake = GetPhysicsBody()->IsAwake();
+
+	record->is_spawned = IsSpawned();
+
+	float position_x;
+	float position_y;
+	GetBodyPosition(position_x, position_y);
+
+	record->position_x = position_x;
+	record->position_y = position_y;
+
+	return record;
 }
 
 void CFence::Deserialize(pRecord record) {
+	auto fence_record = static_cast<pFenceRecord>(record);
+
+	if (IsActive() != fence_record->is_active) {
+		SetActive(fence_record->is_active);
+	}
+
+	if (IsVisible() != fence_record->is_visible) {
+		SetVisible(fence_record->is_visible);
+	}
+
+	if (GetPhysicsBody()->IsEnabled() != fence_record->is_enable) {
+		GetPhysicsBody()->SetEnabled(fence_record->is_enable);
+	}
+
+	if (GetPhysicsBody()->IsAwake() != fence_record->is_awake) {
+		GetPhysicsBody()->SetAwake(fence_record->is_awake);
+	}
+
+	if (IsSpawned() != fence_record->is_spawned) {
+		SetSpawned(fence_record->is_spawned);
+	}
+
+	SetBodyPosition(fence_record->position_x, fence_record->position_y);
 }
 
 void CFence::OnSpawn(float x, float y) {

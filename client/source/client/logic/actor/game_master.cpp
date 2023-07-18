@@ -39,6 +39,7 @@ void CGameMaster::LoadFromPacket(pPacket packet) {
 }
 
 void CGameMaster::HandleStatePacket(pPacket packet) {
+	// So sad, i got nothing to receive :(
 }
 
 void CGameMaster::Render(sf::RenderWindow& window) {

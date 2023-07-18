@@ -55,6 +55,52 @@ void CPlayerTank::LoadFromPacket(pPacket packet) {
 }
 
 void CPlayerTank::HandleStatePacket(pPacket packet) {
+	bool is_active;
+	*packet >> is_active;
+	if (IsActive() != is_active) {
+		SetActive(is_active);
+	}
+
+	bool is_visible;
+	*packet >> is_visible;
+	if (IsVisible() != is_visible) {
+		SetVisible(is_visible);
+	}
+
+	bool is_enable = false;
+	*packet >> is_enable;
+	if (GetPhysicsBody()->IsEnabled() != is_enable) {
+		GetPhysicsBody()->SetEnabled(is_enable);
+	}
+
+	bool is_awake = false;
+	*packet >> is_awake;
+	if (GetPhysicsBody()->IsAwake() != is_awake) {
+		GetPhysicsBody()->SetAwake(is_awake);
+	}
+
+	float position_x = 0.0f;
+	float position_y = 0.0f;
+	*packet >> position_x >> position_y;
+	SetBodyPosition(position_x, position_y);
+	SetLatestPosition(position_x, position_y);
+
+	float velocity_x = 0.0f;
+	float velocity_y = 0.0f;
+	*packet >> velocity_x >> velocity_y;
+	SetBodyVelocity(velocity_x, velocity_y);
+
+	int8_t movement_x = 0;
+	int8_t movement_y = 0;
+	*packet >> movement_x >> movement_y;
+	this->movement_x = movement_x;
+	this->movement_y = movement_y;
+
+	int8_t normal_x = 0;
+	int8_t normal_y = 0;
+	*packet >> normal_x >> normal_y;
+	this->normal_x = normal_x;
+	this->normal_y = normal_y;
 }
 
 void CPlayerTank::HandleInput(Tick tick) {
@@ -74,9 +120,9 @@ void CPlayerTank::Render(sf::RenderWindow& window) {
 		GetBodyPosition(render_x, render_y);
 	}
 	else {
-		float latest_tick = GetPlayScene().GetLatestTick();
-		float reconcilate_tick = GetPlayScene().GetReconcileTick();
-		float tick_per_game_state = GetPlayScene().GetTickPerGameState();
+		float latest_tick = (float)GetPlayScene().GetLatestTick();
+		float reconcilate_tick = (float)GetPlayScene().GetReconcileTick();
+		float tick_per_game_state = (float)GetPlayScene().GetTickPerGameState();
 		float interpolate = (latest_tick - reconcilate_tick - tick_per_game_state) / tick_per_game_state;
 		GetInterpolated(render_x, render_y, interpolate);
 	}

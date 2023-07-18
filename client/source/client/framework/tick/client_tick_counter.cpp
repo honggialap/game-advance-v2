@@ -15,3 +15,11 @@ bool CClientTickCounter::IsReconcile() {
 void CClientTickCounter::SetReconcile(bool value) {
 	reconcile_flag = value;
 }
+
+Tick CClientTickCounter::GetSyncTick() {
+	return sync_tick;
+}
+
+void CClientTickCounter::IncreaseSyncTick() {
+	sync_tick += 1;
+}
