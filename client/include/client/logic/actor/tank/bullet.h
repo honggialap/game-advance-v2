@@ -18,10 +18,10 @@ public:
 	void SetShot(bool value) { is_shot = value; }
 	bool IsShot() { return is_shot; }
 
-	void Shoot(float x, float y, bool left, bool up);
+	void Shoot(float x, float y, int8_t normal_x, int8_t normal_y);
 	void Impact();
 
-	virtual void OnShoot(float x, float y, bool left, bool up) = 0;
+	virtual void OnShoot(float x, float y, int8_t normal_x, int8_t normal_y) = 0;
 	virtual void OnImpact() = 0;
 };
 typedef CBullet* pBullet;

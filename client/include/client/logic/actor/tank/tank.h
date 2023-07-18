@@ -13,7 +13,7 @@ public:
 	void AddBullet(pBullet bullet);
 
 	bool IsShootable();
-	void Shoot(float x, float y, bool left, bool up);
+	void Shoot(float x, float y, int8_t normal_x, int8_t normal_y);
 };
 typedef CTank* pTank;
 

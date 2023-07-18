@@ -25,7 +25,6 @@ void CPickUpSpawner::LoadPickUpSpawner(json& data) {
 void CPickUpSpawner::SpawnPickUp() {
 	bool spawn_success = false;
 	while (!spawn_success) {
-		srand(time(NULL));
 		size_t pick_up_index = rand() % spawnables.size();
 		size_t spawn_position_index = rand() % spawn_positions.size();
 

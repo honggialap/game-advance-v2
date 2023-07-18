@@ -82,7 +82,17 @@ void CEnemyTank::Render(sf::RenderWindow& window) {
 	float interpolate = (latest_tick - reconcilate_tick - tick_per_game_state) / tick_per_game_state;
 	GetInterpolated(render_x, render_y, interpolate);
 
-	auto sprite = GetSprite(11);
+	SpriteID sprite_id = 11;
+	if (normal_x != 0) {
+		if (normal_x == 1) sprite_id = 14;
+		else sprite_id = 12;
+	}
+	else {
+		if (normal_y == 1) sprite_id = 11;
+		else sprite_id = 13;
+	}
+
+	auto sprite = GetSprite(sprite_id);
 	sprite->setPosition(
 		render_x,
 		-render_y + window.getSize().y

@@ -22,11 +22,14 @@ void CEnemyTankSpawner::LoadEnemyTankSpawner(json& data) {
 }
 
 void CEnemyTankSpawner::SpawnEnemyTank() {
-	srand(time(NULL));
 	size_t spawn_position_index = rand() % spawn_positions.size();
 	auto enemy_tank = spawnables[current_index];
 	auto& spawn_position = spawn_positions[spawn_position_index];
-	enemy_tank->Spawn(spawn_position.first, spawn_position.second);
+
+	if (!enemy_tank->IsSpawned()) {
+		enemy_tank->Spawn(spawn_position.first, spawn_position.second);
+	}
+
 	current_index += 1;
 	if (current_index >= spawnables.size()) {
 		current_index = 0;

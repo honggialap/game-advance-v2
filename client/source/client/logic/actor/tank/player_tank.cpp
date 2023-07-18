@@ -104,12 +104,71 @@ void CPlayerTank::HandleStatePacket(pPacket packet) {
 }
 
 void CPlayerTank::HandleInput(Tick tick) {
+	if (!IsActive()) return;
+	if (GetPlayScene().GetGameClient().GetPlayerID() != GetPlayerID()) return;
+	if (!GetPlayScene().GetGameClient().GetGameWindow().hasFocus()) return;
+
+	int8_t movement_x = 0;
+	int8_t movement_y = 0;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+		movement_y = 1;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		movement_y = -1;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		movement_x = 1;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		movement_x = -1;
+	}
+
+	if (this->movement_x != movement_x || this->movement_y != movement_y) {
+		if (movement_x != 0) normal_x = movement_x;
+		if (movement_y != 0) normal_y = movement_y;
+		this->movement_x = movement_x;
+		this->movement_y = movement_y;
+
+		auto command = new CMoveCommand(GetCommandableID(), GetNetworkID(), movement_x, movement_y);
+		GetPlayScene().AddCommandAtTick(tick, command);
+		GetPlayScene().SendMovePacket(tick, command);
+	}
+
+	if (IsShootable()) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+			auto command = new CShootCommand(GetCommandableID(), GetNetworkID(), normal_x, normal_y);
+			GetPlayScene().AddCommandAtTick(tick, command);
+			GetPlayScene().SendShootPacket(tick, command);
+		}
+	}
+
 }
 
 void CPlayerTank::ExecuteCommand(pCommand command) {
+	switch (command->type) {
+	case ECommandType::MOVE: {
+		auto move_command = static_cast<pMoveCommand>(command);
+		SetBodyVelocity(
+			speed * move_command->movement_x
+			, speed * move_command->movement_y
+		);
+		break;
+	}
+
+	case ECommandType::SHOOT: {
+		auto shoot_command = static_cast<pShootCommand>(command);
+		float position_x;
+		float position_y;
+		GetBodyPosition(position_x, position_y);
+		Shoot(position_x, position_y, shoot_command->normal_x, shoot_command->normal_y);
+		break;
+	}
+	default: break;
+	}
 }
 
 void CPlayerTank::Update(float elapsed_ms) {
+	// i don't even know what to use in here :/
 }
 
 void CPlayerTank::Render(sf::RenderWindow& window) {
@@ -127,7 +186,17 @@ void CPlayerTank::Render(sf::RenderWindow& window) {
 		GetInterpolated(render_x, render_y, interpolate);
 	}
 
-	auto sprite = GetSprite(11);
+	SpriteID sprite_id = 11;
+	if (normal_x != 0) {
+		if (normal_x == 1) sprite_id = 14;
+		else sprite_id = 12;
+	}
+	else {
+		if (normal_y == 1) sprite_id = 11;
+		else sprite_id = 13;
+	}
+
+	auto sprite = GetSprite(sprite_id);
 	sprite->setPosition(
 		render_x,
 		-render_y + window.getSize().y

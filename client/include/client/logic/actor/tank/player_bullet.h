@@ -49,7 +49,7 @@ public:
 
 	virtual void HandleEvent(pEvent incomming_event) override final;
 
-	virtual void OnShoot(float x, float y, bool left, bool up) override;
+	virtual void OnShoot(float x, float y, int8_t normal_x, int8_t normal_y) override;
 	virtual void OnImpact() override;
 };
 typedef CPlayerBullet* pPlayerBullet;

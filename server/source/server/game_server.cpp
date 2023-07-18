@@ -14,6 +14,8 @@ void CGameServer::Initialize(std::string data_path) {
 	CServer::StartListen();
 	CPlayerManager::SetMaxPlayerCount(CServer::GetMaxConnectionLimit());
 	CPlayerManager::ResetPlayers();
+
+	srand((unsigned)time(NULL));
 }
 
 void CGameServer::Shutdown() {

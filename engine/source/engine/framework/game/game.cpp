@@ -50,7 +50,7 @@ void CGame::Run(std::string data_path) {
 
 			elapsed_ms -= ms_per_frame;
 		}
-		else Sleep(DWORD((ms_per_frame * 0.1f)));
+		else Sleep(DWORD((ms_per_frame * 0.05f)));
 
 		PostLoop();
 

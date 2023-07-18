@@ -4,6 +4,7 @@
 CCommandable::CCommandable(CCommandManager& command_manager, CommandableID id)
 	: command_manager(command_manager) 
 	, commandable_id(id) {
+	command_manager.AddCommandable(this);
 }
 
 CCommandable::~CCommandable() {

@@ -794,7 +794,9 @@ void CPlayScene::HandleMovePacket(pPacket packet) {
 	if (receive_tick < GetDropTick()) return;
 	if (receive_tick < GetLatestTick()) {
 		SetRollback(true);
-		SetRollbackTick(receive_tick);
+		if (receive_tick < GetRollbackTick()) {
+			SetRollbackTick(receive_tick);
+		}
 	}
 
 	NetworkID network_id;
@@ -824,7 +826,9 @@ void CPlayScene::HandleShootPacket(pPacket packet) {
 	if (receive_tick < GetDropTick()) return;
 	if (receive_tick < GetLatestTick()) {
 		SetRollback(true);
-		SetRollbackTick(receive_tick);
+		if (receive_tick < GetRollbackTick()) {
+			SetRollbackTick(receive_tick);
+		}
 	}
 
 	NetworkID network_id;

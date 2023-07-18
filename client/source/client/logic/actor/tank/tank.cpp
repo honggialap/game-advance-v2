@@ -13,10 +13,10 @@ bool CTank::IsShootable() {
 	return false;
 }
 
-void CTank::Shoot(float x, float y, bool left, bool up) {
+void CTank::Shoot(float x, float y, int8_t normal_x, int8_t normal_y) {
 	for (auto& bullet : bullets) {
 		if (!bullet->IsShot()) {
-			bullet->Shoot(x, y, left, up);
+			bullet->Shoot(x, y, normal_x, normal_y);
 			return;
 		}
 	}

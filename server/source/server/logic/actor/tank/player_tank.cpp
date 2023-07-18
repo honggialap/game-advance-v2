@@ -2,6 +2,8 @@
 #include "server/logic/actor/tank/player_tank_spawner.h"
 #include "server/play_scene.h"
 #include "server/logic/record/tank/player_tank_record.h"
+#include "server/logic/command/move_command.h"
+#include "server/logic/command/shoot_command.h"
 
 CPlayerTank::CPlayerTank(CPlayScene& play_scene, std::string name)
 	: play_scene(play_scene)
@@ -65,6 +67,31 @@ void CPlayerTank::PackLoadPacket(pPacket packet) {
 }
 
 void CPlayerTank::ExecuteCommand(pCommand command) {
+	switch (command->type) {
+	case ECommandType::MOVE: {
+		auto move_command = static_cast<pMoveCommand>(command);
+		if (movement_x != 0) this->normal_x = movement_x;
+		if (movement_y != 0) this->normal_y = movement_y;
+		this->movement_x = movement_x;
+		this->movement_y = movement_y;
+
+		SetBodyVelocity(
+			speed * move_command->movement_x
+			, speed * move_command->movement_y
+		);
+		break;
+	}
+
+	case ECommandType::SHOOT: {
+		auto shoot_command = static_cast<pShootCommand>(command);
+		float position_x;
+		float position_y;
+		GetBodyPosition(position_x, position_y);
+		Shoot(position_x, position_y, shoot_command->normal_x, shoot_command->normal_y);
+		break;
+	}
+	default: break;
+	}
 }
 
 void CPlayerTank::Update(float elapsed_ms) {
@@ -75,7 +102,17 @@ void CPlayerTank::Render(sf::RenderWindow& window) {
 	float render_y;
 	GetBodyPosition(render_x, render_y);
 
-	auto sprite = GetSprite(11);
+	SpriteID sprite_id = 11;
+	if (normal_x != 0) {
+		if (normal_x == 1) sprite_id = 14;
+		else sprite_id = 12;
+	}
+	else {
+		if (normal_y == 1) sprite_id = 11;
+		else sprite_id = 13;
+	}
+
+	auto sprite = GetSprite(sprite_id);
 	sprite->setPosition(
 		render_x,
 		-render_y + window.getSize().y

@@ -225,6 +225,7 @@ void CPlayScene::HandleSyncPacket(pPacket packet) {
 
 	Tick latest_tick = (GetSyncTick() - reply_tick) / 2;
 	SetLatestTick(latest_tick);
+	//SetLatestTick(0);
 
 	SendSyncDonePacket();
 }

@@ -29,13 +29,13 @@ class CEnemyTank
 protected:
 	CPlayScene& play_scene;
 
-	int8_t normal_x;
-	int8_t normal_y;
+	int8_t normal_x = 0;
+	int8_t normal_y = -1;
 
-	int8_t movement_x;
-	int8_t movement_y;
+	int8_t movement_x = 0;
+	int8_t movement_y = 0;
 
-	float speed;
+	float speed = 0.1f;
 
 public:
 	CEnemyTank(CPlayScene& play_scene, std::string name);

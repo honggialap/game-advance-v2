@@ -76,7 +76,17 @@ void CPlayerBullet::Render(sf::RenderWindow& window) {
 	float render_y;
 	GetBodyPosition(render_x, render_y);
 
-	auto sprite = GetSprite(11);
+	SpriteID sprite_id = 1;
+	if (normal_x != 0) {
+		if (normal_x == 1) sprite_id = 4;
+		else sprite_id = 2;
+	}
+	else {
+		if (normal_y == 1) sprite_id = 1;
+		else sprite_id = 3;
+	}
+
+	auto sprite = GetSprite(sprite_id);
 	sprite->setPosition(
 		render_x,
 		-render_y + window.getSize().y

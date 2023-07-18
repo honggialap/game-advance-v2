@@ -127,7 +127,17 @@ void CPlayerBullet::Render(sf::RenderWindow& window) {
 		GetInterpolated(render_x, render_y, interpolate);
 	}
 
-	auto sprite = GetSprite(11);
+	SpriteID sprite_id = 1;
+	if (normal_x != 0) {
+		if (normal_x == 1) sprite_id = 4;
+		else sprite_id = 2;
+	}
+	else {
+		if (normal_y == 1) sprite_id = 1;
+		else sprite_id = 3;
+	}
+
+	auto sprite = GetSprite(sprite_id);
 	sprite->setPosition(
 		render_x,
 		-render_y + window.getSize().y
@@ -144,10 +154,20 @@ void CPlayerBullet::OnCollisionExit(CBody* other) {
 void CPlayerBullet::HandleEvent(pEvent incomming_event) {
 }
 
-void CPlayerBullet::OnShoot(float x, float y, bool left, bool up)
-{
+void CPlayerBullet::OnShoot(float x, float y, int8_t normal_x, int8_t normal_y) {
+	SetActive(true);
+	SetVisible(true);
+	GetPhysicsBody()->SetEnabled(true);
+	GetPhysicsBody()->SetAwake(true);
+	SetBodyPosition(x, y);
+	SetBodyVelocity(speed * normal_x, speed * normal_y);
+	this->normal_x = normal_x;
+	this->normal_y = normal_y;
 }
 
-void CPlayerBullet::OnImpact()
-{
+void CPlayerBullet::OnImpact() {
+	SetActive(false);
+	SetVisible(false);
+	GetPhysicsBody()->SetEnabled(false);
+	GetPhysicsBody()->SetAwake(false);
 }
